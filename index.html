@@ -6,257 +6,149 @@
 <title>Una sorpresita</title>
 
 <style>
-:root {
-  --bg-light: #ffeaf2;
-  --bg-dark: #1f1b24;
-  --text-light: #4a3a45;
-  --text-dark: #f5e9f0;
-}
-
+/* ---------------- GENERAL (MODO NOCHE) ---------------- */
 body {
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-light);
-  color: var(--text-light);
+  background: radial-gradient(circle at top, #2a1b2d, #0f0a14);
   font-family: "Poppins", sans-serif;
   overflow: hidden;
-  transition: background 1.2s, color 1.2s;
+  color: #f5e9f0;
 }
 
-/* 🌙 MODO NOCHE */
-body.night {
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
-}
-
-/* ❄️💖 PARTÍCULAS */
-.particle {
-  position: fixed;
-  top: -10px;
-  pointer-events: none;
-  animation: fall linear infinite;
-}
-
-.snow {
-  color: white;
-  font-size: 0.45rem;
-  opacity: 0.8;
-}
-
-.heart {
-  color: rgba(255, 120, 160, 0.9);
-  font-size: 0.7rem;
-}
-
-@keyframes fall {
-  to { transform: translateY(110vh); }
-}
-
-/* CONTENEDOR */
+/* ---------------- CONTENEDOR ---------------- */
 .container {
-  z-index: 2;
-  padding: 25px 35px;
-  border-radius: 22px;
   text-align: center;
-  background: rgba(255, 240, 250, 0.55);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 30px 40px;
+  border-radius: 25px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 230, 0.12),
+    rgba(200, 140, 180, 0.18)
+  );
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   max-width: 90%;
+  backdrop-filter: blur(6px);
 }
 
-/* TEXTO */
+/* ---------------- MENSAJE ---------------- */
 .message {
   font-size: 1.5rem;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   opacity: 0;
   transition: opacity 1.2s ease;
+  color: #ffeef6;
 }
 
 .message.show {
   opacity: 1;
 }
 
-.signature {
-  margin-top: 15px;
-  font-size: 1.1rem;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.signature.show {
-  opacity: 1;
-}
-
-/* BOTONES */
+/* ---------------- BOTÓN ---------------- */
 .button {
-  padding: 14px 32px;
-  border-radius: 10rem;
-  background-color: rgba(200, 120, 150, 0.9);
-  color: white;
+  padding: 15px 35px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #c87a9a, #e3a1be);
+  color: #1a0f16;
   font-weight: bold;
   cursor: pointer;
-  border: none;
-  transition: 0.3s;
-  margin-top: 10px;
+  font-size: 1rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
 }
 
 .button:hover {
-  background-color: rgba(220, 140, 170, 0.9);
+  transform: scale(1.05);
 }
 
-.button:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-/* 🌙 BOTÓN NOCHE */
-.toggle-night {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  background: rgba(0,0,0,0.3);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  z-index: 3;
-}
-
-/* 🎁 PANTALLA FINAL */
-.final-screen {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  color: white;
-  font-size: 2.2rem;
-  opacity: 0;
+/* ---------------- PARTÍCULAS ---------------- */
+.particle {
+  position: absolute;
+  top: -20px;
+  font-size: 14px;
+  animation: fall linear infinite;
+  opacity: 0.85;
   pointer-events: none;
-  transition: opacity 1.5s ease;
-  z-index: 5;
 }
 
-.final-screen.show {
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* 📱 MOBILE */
-@media (max-width: 600px) {
-  .message { font-size: 1.2rem; }
-  .signature { font-size: 1rem; }
-  .button { padding: 12px 26px; }
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<button class="toggle-night" onclick="toggleNight()">🌙</button>
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="cancion.mp3" type="audio/mpeg">
+</audio>
 
 <div class="container">
   <div id="message" class="message"></div>
-
-  <div id="signature" class="signature">
-    Con todo mi corazón,<br>Whers ❤️
-  </div>
-
-  <button id="startBtn" class="button">Comenzar</button>
+  <button class="button" onclick="start()">Comenzar</button>
 </div>
-
-<div id="finalScreen" class="final-screen">
-  🎁 Gracias por existir 💖
-</div>
-
-<!-- 🎶 MÚSICA -->
-<audio id="music" loop>
-  <source src="musica.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 const messages = [
-  "Mi amor, me mostraste el verdadero significado del amor.",
-  "LA verdad me hace feliz, verte a mi lado y que te sientas comoda",
-  "Princesa, eres mi mundo.",
-  "Me siento feliz de pasar estas navidades con vos",
-  "Eres el amor de mi vida.",
-  "Siempre serás mi mundo."
+  "Mi amor, me mostraste el significado del amor 💖",
+  "A pesar de mis errores, te quedaste conmigo",
+  "Desde que llegaste, mi vida cambió por completo",
+  "Me enseñaste que todavía puedo dar más de lo que creí",
+  "Eres el amor de mi vida",
+  "Siempre hasta el final de mis días",
+  "Gracias por existir ✨",
+  "Con todo mi corazón, Whers 💞"
 ];
 
-const importantMessages = [2, 4, 5];
 let index = 0;
+const messageEl = document.getElementById("message");
+const music = document.getElementById("bgMusic");
 let started = false;
 
-const msg = document.getElementById("message");
-const btn = document.getElementById("startBtn");
-const music = document.getElementById("music");
-const sign = document.getElementById("signature");
-const finalScreen = document.getElementById("finalScreen");
+function start() {
+  if (!started) {
+    started = true;
 
-btn.onclick = () => {
-  if (started) return;
-  started = true;
-  btn.disabled = true;
-  music.volume = 0.3;
-  music.play();
-  showMessage();
-  setInterval(showMessage, 10000);
-};
+    // música (solo tras interacción)
+    music.volume = 0.3;
+    music.play().catch(() => {});
 
-function showMessage() {
-  msg.classList.remove("show");
-
-  setTimeout(() => {
-    msg.textContent = messages[index];
-    msg.classList.add("show");
-
-    if (importantMessages.includes(index)) launchHearts();
-
-    if (index === messages.length - 1) {
-      sign.classList.add("show");
-      setTimeout(() => finalScreen.classList.add("show"), 8000);
-    }
-
-    index++;
-  }, 400);
-}
-
-/* ❄️ NIEVE CONSTANTE */
-setInterval(() => createParticle("❄", "snow"), 450);
-
-/* 💖 CORAZONES SOLO EN MOMENTOS IMPORTANTES */
-function launchHearts() {
-  for (let i = 0; i < 18; i++) {
-    setTimeout(() => createParticle("❤", "heart"), i * 120);
+    showMessage();
+    setInterval(showMessage, 9000);
   }
 }
 
-function createParticle(symbol, cls) {
-  const p = document.createElement("div");
-  p.className = `particle ${cls}`;
-  p.innerHTML = symbol;
-  p.style.left = Math.random() * window.innerWidth + "px";
-  p.style.animationDuration = 6 + Math.random() * 6 + "s";
-  document.body.appendChild(p);
-  setTimeout(() => p.remove(), 12000);
+function showMessage() {
+  messageEl.classList.remove("show");
+  setTimeout(() => {
+    messageEl.textContent = messages[index];
+    messageEl.classList.add("show");
+    index = (index + 1) % messages.length;
+  }, 300);
 }
 
-/* 🌙 TOGGLE NOCHE */
-function toggleNight() {
-  document.body.classList.toggle("night");
-}
+/* --------- PARTÍCULAS: CORAZONES + COPOS --------- */
+setInterval(() => {
+  const particle = document.createElement("div");
+  particle.className = "particle";
+  particle.style.left = Math.random() * 100 + "vw";
+  particle.style.animationDuration = 6 + Math.random() * 6 + "s";
+  particle.textContent = Math.random() > 0.5 ? "❄️" : "💖";
+  document.body.appendChild(particle);
+
+  setTimeout(() => particle.remove(), 12000);
+}, 450);
 </script>
 
 </body>
 </html>
+
+
 
 
