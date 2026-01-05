@@ -58,7 +58,6 @@ body {
   cursor: pointer;
   font-size: 1rem;
   box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-  transition: opacity 0.6s ease, transform 0.3s ease;
 }
 
 .button:hover {
@@ -92,7 +91,7 @@ body {
 
 <div class="container">
   <div id="message" class="message"></div>
-  <button id="startBtn" class="button" onclick="start()">Comenzar</button>
+  <button class="button" onclick="start()">Comenzar</button>
 </div>
 
 <script>
@@ -102,9 +101,9 @@ const messages = [
   "Desde que llegaste, mi vida cambió por completo",
   "Me enseñaste que todavía puedo dar más de lo que creí",
   "Eres el amor de mi vida",
-  "Siempre hasta el final de mis días",
+  "Con todo mi corazón, Whers 💞",
   "Gracias por existir ✨",
-  "Con todo mi corazón, Whers 💞"
+  "¿ Quieres pasar el resto de tus dias al lado mio, como mi pareja ?"
 ];
 
 let index = 0;
@@ -113,20 +112,16 @@ const music = document.getElementById("bgMusic");
 let started = false;
 
 function start() {
-  if (started) return;
-  started = true;
+  if (!started) {
+    started = true;
 
-  // Animación para ocultar botón
-  const btn = document.getElementById("startBtn");
-  btn.style.opacity = "0";
-  setTimeout(() => btn.style.display = "none", 600);
+    // música (solo tras interacción)
+    music.volume = 0.3;
+    music.play().catch(() => {});
 
-  // Música (solo tras interacción)
-  music.volume = 0.3;
-  music.play().catch(() => {});
-
-  showMessage();
-  setInterval(showMessage, 9000);
+    showMessage();
+    setInterval(showMessage, 9000);
+  }
 }
 
 function showMessage() {
@@ -144,7 +139,7 @@ setInterval(() => {
   particle.className = "particle";
   particle.style.left = Math.random() * 100 + "vw";
   particle.style.animationDuration = 6 + Math.random() * 6 + "s";
-  particle.textContent = Math.random() > 0.5 ? "❄️" : "💖";
+  particle.textContent = Math.random() > 0.5 ? "🌹" : "💜";
   document.body.appendChild(particle);
 
   setTimeout(() => particle.remove(), 12000);
@@ -153,6 +148,7 @@ setInterval(() => {
 
 </body>
 </html>
+
 
 
 
